@@ -1,5 +1,7 @@
 # TDengine ORM Boot Starter Demo
 
+[English](README_EN.md) | [中文](README.md)
+
 这是 `tdengine-orm-boot-starter` 的示例项目，通过简洁的测试用例展示了 ORM 框架的所有核心功能。
 
 ## 项目简介
@@ -7,14 +9,18 @@
 本项目是一个极简的测试示例，演示了如何使用 TdTemplate 操作 TDengine 时序数据库：
 
 - **一个实体类**：SensorData（传感器数据，展示超级表和TAG的使用）
-- **一个测试类**：14个测试用例，覆盖所有核心功能
+- **一个测试类**：15个测试用例，覆盖所有核心功能
 - **直接使用 TdTemplate**：无Service层，代码更清晰
 - **开箱即用**：运行测试类即可看到所有功能演示
+
+> 💡 **本项目是 [tdengine-orm-boot-starter](https://github.com/zephyrcicd/tdengine-orm-boot-starter) 的官方示例项目**
+>
+> 如果您还不了解 TDengine ORM Boot Starter，请先访问主项目查看详细文档。
 
 ## 技术栈
 
 - Spring Boot 2.4.2
-- TDengine ORM Boot Starter 1.2.1
+- TDengine ORM Boot Starter 1.3.0
 - JUnit 5
 - Lombok
 
@@ -72,7 +78,7 @@ src/
 │       └── TestDataGenerator.java    # 测试数据生成工具
 │
 ├── test/java/com/zephyrcicd/demo/
-│   └── SensorDataTest.java          # 完整功能测试（14个测试）
+│   └── SensorDataTest.java          # 完整功能测试（15个测试）
 │
 └── main/resources/
     └── application.yml               # 配置文件
@@ -80,24 +86,25 @@ src/
 
 ## 测试用例说明
 
-### SensorDataTest - 14个核心功能测试
+### SensorDataTest - 15个核心功能测试
 
 | 测试 | 说明 | 展示功能 |
 |------|------|----------|
 | 1. 创建超级表 | 自动创建传感器数据超级表 | `createStableTableIfNotExist()` |
 | 2. 插入单条数据 | USING 语法插入，自动创建子表 | `insertUsing()` + 动态表名策略 |
 | 3. 批量插入数据 | 批量插入 100 条数据到单个子表 | `batchInsertUsing()` |
-| 4. 批量插入多设备 | 5个设备各 50 条数据 | 多子表批量插入 |
+| 4. 批量插入多设备 | 3个设备（北京、上海、广州）各 50 条数据 | 多子表批量插入 |
 | 5. 查询最新数据 | 查询设备最新 10 条数据 | `list()` + orderBy + limit |
 | 6. 条件查询 | 多条件组合查询 | 动态条件构建（eq/ge/le/gt） |
 | 7. 分页查询 | 分页返回数据 | `page()` 方法 |
-| 8. 聚合统计 | COUNT/AVG/MAX/MIN 统计 | 聚合函数使用 |
+| 8. 聚合统计 | AVG/MAX/MIN 统计 | 聚合函数使用 |
 | 9. 分组统计 | 按位置分组统计 | `groupBy()` + orderBy |
 | 10. 统计数量 | 统计数据条数 | `count()` |
 | 11. 查询单条 | 查询单条最新数据 | `getOne()` |
 | 12. 插入告警数据 | 插入不同状态的数据 | 状态字段使用 |
 | 13. 查询告警数据 | 查询特定状态数据 | `in()` 条件 |
-| 14. 时间窗口查询 | 按小时统计平均值 | `interval()` 窗口函数 |
+| 14. 时间窗口查询 | 按小时统计平均值 | `intervalWindow()` 窗口函数 |
+| 15. 分区时间窗口查询 | 按位置分区的时间窗口统计 | `partitionBy()` + `intervalWindow()` |
 
 ## 核心代码示例
 
