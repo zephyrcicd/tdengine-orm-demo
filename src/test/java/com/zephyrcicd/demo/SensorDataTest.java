@@ -8,8 +8,9 @@ import com.zephyrcicd.tdengineorm.strategy.DynamicNameStrategy;
 import com.zephyrcicd.tdengineorm.template.TdTemplate;
 import com.zephyrcicd.tdengineorm.wrapper.TdQueryWrapper;
 import com.zephyrcicd.tdengineorm.wrapper.TdWrappers;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -22,10 +23,11 @@ import java.util.Map;
  *
  * @author zephyr
  */
-@Slf4j
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SensorDataTest {
+
+    private static final Logger log = LoggerFactory.getLogger(SensorDataTest.class);
 
     @Autowired
     private TdTemplate tdTemplate;
@@ -409,6 +411,7 @@ class SensorDataTest {
 
     @AfterAll
     static void afterAll() {
+        Logger log = LoggerFactory.getLogger(SensorDataTest.class);
         log.info("\n========================================");
         log.info("TDengine ORM 功能演示完成！");
         log.info("========================================");

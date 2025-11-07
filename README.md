@@ -22,7 +22,6 @@
 - Spring Boot 2.4.2
 - TDengine ORM Boot Starter 1.3.0
 - JUnit 5
-- Lombok
 
 ## 快速开始
 
@@ -112,8 +111,6 @@ src/
 
 ```java
 @TdTable(value = "sensors", comment = "传感器超级表")
-@Data
-@Builder
 public class SensorData {
     @TdTag  // TAG 字段，用于子表分组
     @TdColumn(value = "device_id", length = 50)
@@ -128,7 +125,17 @@ public class SensorData {
 
     @TdColumn(value = "temperature", type = TdFieldTypeEnum.DOUBLE)
     private Double temperature;  // 温度
-    // ...
+
+    // getter/setter methods...
+
+    // Builder pattern
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        // Builder implementation...
+    }
 }
 ```
 

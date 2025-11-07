@@ -22,7 +22,6 @@ This is a minimalist test demo that demonstrates how to use TdTemplate to operat
 - Spring Boot 2.4.2
 - TDengine ORM Boot Starter 1.3.0
 - JUnit 5
-- Lombok
 
 ## Quick Start
 
@@ -112,8 +111,6 @@ src/
 
 ```java
 @TdTable(value = "sensors", comment = "Sensor super table")
-@Data
-@Builder
 public class SensorData {
     @TdTag  // TAG field for sub-table grouping
     @TdColumn(value = "device_id", length = 50)
@@ -128,7 +125,17 @@ public class SensorData {
 
     @TdColumn(value = "temperature", type = TdFieldTypeEnum.DOUBLE)
     private Double temperature;  // Temperature
-    // ...
+
+    // getter/setter methods...
+
+    // Builder pattern
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        // Builder implementation...
+    }
 }
 ```
 

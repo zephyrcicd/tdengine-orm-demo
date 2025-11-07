@@ -4,10 +4,6 @@ import com.zephyrcicd.tdengineorm.annotation.TdColumn;
 import com.zephyrcicd.tdengineorm.annotation.TdTable;
 import com.zephyrcicd.tdengineorm.annotation.TdTag;
 import com.zephyrcicd.tdengineorm.enums.TdFieldTypeEnum;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 传感器数据实体类
@@ -15,10 +11,6 @@ import lombok.NoArgsConstructor;
  *
  * @author zephyr
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @TdTable(value = "sensors", comment = "传感器超级表")
 public class SensorData {
 
@@ -79,4 +71,162 @@ public class SensorData {
      */
     @TdColumn(value = "remark", length = 200)
     private String remark;
+
+    // 无参构造函数
+    public SensorData() {
+    }
+
+    // 全参构造函数
+    public SensorData(String deviceId, String location, String deviceType, Long ts,
+                      Double temperature, Double humidity, Float voltage, Integer status, String remark) {
+        this.deviceId = deviceId;
+        this.location = location;
+        this.deviceType = deviceType;
+        this.ts = ts;
+        this.temperature = temperature;
+        this.humidity = humidity;
+        this.voltage = voltage;
+        this.status = status;
+        this.remark = remark;
+    }
+
+    // Getter and Setter methods
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
+    }
+
+    public Long getTs() {
+        return ts;
+    }
+
+    public void setTs(Long ts) {
+        this.ts = ts;
+    }
+
+    public Double getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(Double temperature) {
+        this.temperature = temperature;
+    }
+
+    public Double getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(Double humidity) {
+        this.humidity = humidity;
+    }
+
+    public Float getVoltage() {
+        return voltage;
+    }
+
+    public void setVoltage(Float voltage) {
+        this.voltage = voltage;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    // Builder pattern
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String deviceId;
+        private String location;
+        private String deviceType;
+        private Long ts;
+        private Double temperature;
+        private Double humidity;
+        private Float voltage;
+        private Integer status;
+        private String remark;
+
+        public Builder deviceId(String deviceId) {
+            this.deviceId = deviceId;
+            return this;
+        }
+
+        public Builder location(String location) {
+            this.location = location;
+            return this;
+        }
+
+        public Builder deviceType(String deviceType) {
+            this.deviceType = deviceType;
+            return this;
+        }
+
+        public Builder ts(Long ts) {
+            this.ts = ts;
+            return this;
+        }
+
+        public Builder temperature(Double temperature) {
+            this.temperature = temperature;
+            return this;
+        }
+
+        public Builder humidity(Double humidity) {
+            this.humidity = humidity;
+            return this;
+        }
+
+        public Builder voltage(Float voltage) {
+            this.voltage = voltage;
+            return this;
+        }
+
+        public Builder status(Integer status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder remark(String remark) {
+            this.remark = remark;
+            return this;
+        }
+
+        public SensorData build() {
+            return new SensorData(deviceId, location, deviceType, ts,
+                    temperature, humidity, voltage, status, remark);
+        }
+    }
 }
