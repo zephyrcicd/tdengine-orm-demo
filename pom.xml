@@ -6,7 +6,7 @@
 
     <groupId>io.github.zephyrcicd</groupId>
     <artifactId>tdengine-orm-demo</artifactId>
-    <version>1.5.3</version>
+    <version>1.5.6</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

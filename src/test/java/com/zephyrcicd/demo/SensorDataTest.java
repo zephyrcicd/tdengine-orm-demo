@@ -33,8 +33,7 @@ class SensorDataTest {
     private TdTemplate tdTemplate;
 
     // 动态表名策略：根据设备ID生成子表名
-    private final DynamicNameStrategy<SensorData> strategy = entity ->
-            "sensor_" + entity.getDeviceId();
+    private final DynamicNameStrategy<SensorData> strategy = entity -> "sensor_" + entity.getDeviceId();
 
     @Test
     @Order(1)
@@ -60,7 +59,7 @@ class SensorDataTest {
                 .deviceId("device001")
                 .location("北京机房")
                 .deviceType("温湿度传感器")
-                .ts(System.currentTimeMillis())
+                // .ts(System.currentTimeMillis()) // 默认开启了自动生成ts的策略
                 .temperature(25.5)
                 .humidity(60.0)
                 .voltage(3.3f)
