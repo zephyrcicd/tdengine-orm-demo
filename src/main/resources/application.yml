@@ -1,14 +1,15 @@
 spring:
   application:
     name: tdengine-orm-demo
+  datasource:
+    url: jdbc:TAOS-RS://localhost:6041/td_orm_demo?charset=utf-8
+    driver-class-name: com.taosdata.jdbc.rs.RestfulDriver
+    username: root
+    password: taosdata
 
 # TDengine ORM 配置
 td-orm:
   enabled: true
-  url: jdbc:TAOS-RS://localhost:6041/td_orm_demo?charset=utf-8
-  driver-class-name: com.taosdata.jdbc.rs.RestfulDriver
-  username: root
-  password: taosdata
   log-level: INFO
 
 # 日志配置

@@ -2,8 +2,10 @@ package com.zephyrcicd.demo;
 
 import com.zephyrcicd.demo.entity.SensorData;
 import com.zephyrcicd.demo.util.TestDataGenerator;
+import com.zephyrcicd.tdengineorm.cache.TagOrderCacheManager;
 import com.zephyrcicd.tdengineorm.dto.Page;
 import com.zephyrcicd.tdengineorm.enums.TdSelectFuncEnum;
+import com.zephyrcicd.tdengineorm.strategy.DefaultTagNameStrategy;
 import com.zephyrcicd.tdengineorm.strategy.DynamicNameStrategy;
 import com.zephyrcicd.tdengineorm.template.TdTemplate;
 import com.zephyrcicd.tdengineorm.wrapper.TdQueryWrapper;
@@ -14,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +35,8 @@ class SensorDataTest {
 
     @Autowired
     private TdTemplate tdTemplate;
+    @Autowired
+    private TagOrderCacheManager tagOrderCacheManager;
 
     // 动态表名策略：根据设备ID生成子表名
     private final DynamicNameStrategy<SensorData> strategy = entity -> "sensor_" + entity.getDeviceId();
@@ -408,11 +414,36 @@ class SensorDataTest {
                         stat.get("data_count")));
     }
 
-    @AfterAll
-    static void afterAll() {
-        Logger log = LoggerFactory.getLogger(SensorDataTest.class);
-        log.info("\n========================================");
-        log.info("TDengine ORM 功能演示完成！");
-        log.info("========================================");
+    @Test
+    @Order(16)
+    @DisplayName("16. 测试使用默认TAG策略入库")
+    void testInsertWithDefaultTagStrategy() {
+        List<SensorData> list = new ArrayList<>(1000);
+        for (int i = 0; i < 2; i++) {
+            SensorData data = SensorData.builder()
+                    .deviceId(i % 3 == 0 ? "device001" : "device002")
+                    .location("北京机房")
+                    .deviceType(i % 3 == 0 ? "温度传感器" : "压力传感器")
+                    // .ts(System.currentTimeMillis()) // 默认开启了自动生成ts的策略
+                    .temperature((double) i)
+                    .humidity((double) i)
+                    .voltage(3.3f)
+                    .status(0)
+                    .remark("第一条数据")
+                    .build();
+            list.add(data);
+        }
+
+        int[] ints = tdTemplate.batchInsertUsing(SensorData.class, list, new DefaultTagNameStrategy<>(tagOrderCacheManager));
+        log.info("testInsertWithDefaultTagStrategy， batch insert result：{}", Arrays.stream(ints).count());
     }
+
+
+@AfterAll
+static void afterAll() {
+    Logger log = LoggerFactory.getLogger(SensorDataTest.class);
+    log.info("\n========================================");
+    log.info("TDengine ORM 功能演示完成！");
+    log.info("========================================");
+}
 }
