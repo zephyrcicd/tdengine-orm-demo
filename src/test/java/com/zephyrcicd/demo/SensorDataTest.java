@@ -419,17 +419,17 @@ class SensorDataTest {
     @DisplayName("16. 测试使用默认TAG策略入库")
     void testInsertWithDefaultTagStrategy() {
         List<SensorData> list = new ArrayList<>(1000);
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 100; i++) {
             SensorData data = SensorData.builder()
                     .deviceId(i % 3 == 0 ? "device001" : "device002")
-                    .location("北京机房")
-                    .deviceType(i % 3 == 0 ? "温度传感器" : "压力传感器")
+                    .location("beijing")
+                    .deviceType(i % 3 == 0 ? "template" : "pressure")
                     // .ts(System.currentTimeMillis()) // 默认开启了自动生成ts的策略
                     .temperature((double) i)
                     .humidity((double) i)
                     .voltage(3.3f)
                     .status(0)
-                    .remark("第一条数据")
+                    .remark("第" + i + "条数据")
                     .build();
             list.add(data);
         }
@@ -439,11 +439,11 @@ class SensorDataTest {
     }
 
 
-@AfterAll
-static void afterAll() {
-    Logger log = LoggerFactory.getLogger(SensorDataTest.class);
-    log.info("\n========================================");
-    log.info("TDengine ORM 功能演示完成！");
-    log.info("========================================");
-}
+    @AfterAll
+    static void afterAll() {
+        Logger log = LoggerFactory.getLogger(SensorDataTest.class);
+        log.info("\n========================================");
+        log.info("TDengine ORM 功能演示完成！");
+        log.info("========================================");
+    }
 }
