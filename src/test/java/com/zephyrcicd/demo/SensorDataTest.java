@@ -2,10 +2,8 @@ package com.zephyrcicd.demo;
 
 import com.zephyrcicd.demo.entity.SensorData;
 import com.zephyrcicd.demo.util.TestDataGenerator;
-import com.zephyrcicd.tdengineorm.cache.TagOrderCacheManager;
 import com.zephyrcicd.tdengineorm.dto.Page;
 import com.zephyrcicd.tdengineorm.enums.TdSelectFuncEnum;
-import com.zephyrcicd.tdengineorm.strategy.DefaultTagNameStrategy;
 import com.zephyrcicd.tdengineorm.strategy.DynamicNameStrategy;
 import com.zephyrcicd.tdengineorm.template.TdTemplate;
 import com.zephyrcicd.tdengineorm.wrapper.TdQueryWrapper;
@@ -35,8 +33,6 @@ class SensorDataTest {
 
     @Autowired
     private TdTemplate tdTemplate;
-    @Autowired
-    private TagOrderCacheManager tagOrderCacheManager;
 
     // 动态表名策略：根据设备ID生成子表名
     private final DynamicNameStrategy<SensorData> strategy = entity -> "sensor_" + entity.getDeviceId();
@@ -434,7 +430,7 @@ class SensorDataTest {
             list.add(data);
         }
 
-        int[] ints = tdTemplate.batchInsertUsing(SensorData.class, list, new DefaultTagNameStrategy<>(tagOrderCacheManager));
+        int[] ints = tdTemplate.batchInsertUsing(SensorData.class, list);
         log.info("testInsertWithDefaultTagStrategy， batch insert result：{}", Arrays.stream(ints).count());
     }
 
