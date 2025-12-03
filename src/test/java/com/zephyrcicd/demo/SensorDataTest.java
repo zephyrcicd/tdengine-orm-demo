@@ -86,7 +86,7 @@ class SensorDataTest {
         List<SensorData> dataList = TestDataGenerator.generateSensorData("device001", 100);
 
         long startTime = System.nanoTime();
-        tdTemplate.batchInsertUsing(SensorData.class, dataList, strategy);
+        tdTemplate.batchInsertUsing(dataList, strategy);
         long endTime = System.nanoTime();
 
         double elapsedMs = (endTime - startTime) / 1_000_000.0;
@@ -105,7 +105,7 @@ class SensorDataTest {
         List<SensorData> dataList = TestDataGenerator.generateMultiDeviceWithDifferentLocations(3, 50);
 
         long startTime = System.nanoTime();
-        tdTemplate.batchInsertUsing(SensorData.class, dataList, strategy);
+        tdTemplate.batchInsertUsing(dataList, strategy);
         long endTime = System.nanoTime();
 
         double elapsedMs = (endTime - startTime) / 1_000_000.0;
@@ -304,7 +304,7 @@ class SensorDataTest {
         List<SensorData> alertData = TestDataGenerator.generateAlertData("device001", 20);
 
         long startTime = System.nanoTime();
-        tdTemplate.batchInsert(SensorData.class, alertData, strategy);
+        tdTemplate.batchInsert(alertData, strategy);
         long endTime = System.nanoTime();
 
         double elapsedMs = (endTime - startTime) / 1_000_000.0;
@@ -430,7 +430,7 @@ class SensorDataTest {
             list.add(data);
         }
 
-        int[] ints = tdTemplate.batchInsertUsing(SensorData.class, list);
+        int[] ints = tdTemplate.batchInsertUsing(list);
         log.info("testInsertWithDefaultTagStrategy， batch insert result：{}", Arrays.stream(ints).count());
     }
 
