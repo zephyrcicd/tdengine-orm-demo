@@ -72,12 +72,15 @@ src/
 ├── main/java/com/zephyrcicd/demo/
 │   ├── TdOrmDemoApplication.java     # Spring Boot 启动类
 │   ├── entity/
-│   │   └── SensorData.java          # 传感器数据实体（Super Table）
+│   │   ├── SensorData.java          # 传感器数据实体（Super Table）
+│   │   └── BenchmarkData.java       # 压测专用实体（双 TAG）
 │   └── util/
-│       └── TestDataGenerator.java    # 测试数据生成工具
+│       ├── TestDataGenerator.java    # 功能测试数据生成
+│       └── BenchmarkDataGenerator.java # 压测数据生成
 │
 ├── test/java/com/zephyrcicd/demo/
-│   └── SensorDataTest.java          # 完整功能测试（15个测试）
+│   ├── SensorDataTest.java          # 完整功能测试（15个测试）
+│   └── SensorDataPerformanceTest.java # 插入/查询压测
 │
 └── main/resources/
     └── application.yml               # 配置文件
@@ -104,6 +107,52 @@ src/
 | 13. 查询告警数据 | 查询特定状态数据 | `in()` 条件 |
 | 14. 时间窗口查询 | 按小时统计平均值 | `intervalWindow()` 窗口函数 |
 | 15. 分区时间窗口查询 | 按位置分区的时间窗口统计 | `partitionBy()` + `intervalWindow()` |
+
+## 性能压测
+
+`SensorDataPerformanceTest` 使用双 TAG 的 `BenchmarkData` 超级表验证不同写入/查询方式的耗时。可通过系统属性调整规模，例如：
+
+```bash
+mvn test -Dtest=SensorDataPerformanceTest \
+  -Dtd.perf.deviceCount=5 \
+  -Dtd.perf.rowsPerDevice=10000 \
+  -Dtd.perf.partitionSize=500 \
+  -Dtd.perf.queryLimit=1000 \
+  -Dtd.perf.queryWindowMinutes=30 \
+  -Dtd.perf.queryWindowMinutesLarge=360
+```
+
+以上命令在 5 个设备 × 4 个 region 的场景下，共插入 5 万条数据，并比较以下模式：
+
+### 批量写入性能
+
+| 模式 | 数据量 | 耗时 (ms) | 吞吐量 (行/秒) |
+|------|--------|-----------|----------------|
+| 指定子表批量插入 (`batchInsert`) | 50,000 | 699.26 | 71,504 |
+| 超级表 USING 批量插入 (`batchInsertUsing`) | 50,000 | 552.87 | 90,438 |
+
+USING 方式约快 21%，在自动建表场景下更具优势。
+
+### 查询性能
+
+| 场景 | 查询方式 | 总返回行 | 耗时 (ms) | QPS |
+|------|----------|----------|-----------|-----|
+| 短窗口（30 分钟） | 指定子表名称 SQL | 5,000 | 174.71 | 28.62 |
+|  | 超级表 + TAG SQL | 5,000 | 70.70 | 70.72 |
+|  | TdWrapper + TAG | 5,000 | 181.28 | 27.58 |
+|  | TdWrapper 无 TAG | 5,000 | 155.66 | 32.12 |
+| 大窗口（6 小时） | 指定子表名称 SQL | 5,000 | 83.24 | 60.06 |
+|  | 超级表 + TAG SQL | 5,000 | 86.56 | 57.77 |
+|  | TdWrapper + TAG | 5,000 | 64.80 | 77.16 |
+|  | TdWrapper 无 TAG | 5,000 | 74.75 | 66.89 |
+
+> 说明：
+> - 查询默认按照 `td.perf.queryLimit` 每个设备截断（上表示例为 1000，5 台设备共 5000 行）。
+> - 可通过 `td.perf.queryWindowMinutesLarge` 扩大「大窗口」时间范围，或调大 `td.perf.queryLimit` 以验证更高负载。
+> - 「短窗口」场景下，直接命中超级表 + TAG 的查询明显优于针对子表的 SQL；窗口放大后二者性能接近，但仍保持同量级。
+> - 使用 `TdWrapper` 时务必同时指定所有 TAG，缺少 TAG 会让查询退化成全表扫描，吞吐下降。
+
+日志中还会输出每个子表 SQL 组装与 JDBC 执行的耗时，便于进一步定位瓶颈。
 
 ## 核心代码示例
 

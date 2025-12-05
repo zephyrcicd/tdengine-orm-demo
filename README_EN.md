@@ -72,12 +72,15 @@ src/
 ├── main/java/com/zephyrcicd/demo/
 │   ├── TdOrmDemoApplication.java     # Spring Boot application
 │   ├── entity/
-│   │   └── SensorData.java          # Sensor data entity (Super Table)
+│   │   ├── SensorData.java          # Sensor data entity (Super Table)
+│   │   └── BenchmarkData.java       # Performance entity (two TAGs)
 │   └── util/
-│       └── TestDataGenerator.java    # Test data generator utility
+│       ├── TestDataGenerator.java    # Functional data generator
+│       └── BenchmarkDataGenerator.java # Performance data generator
 │
 ├── test/java/com/zephyrcicd/demo/
-│   └── SensorDataTest.java          # Complete feature tests (15 tests)
+│   ├── SensorDataTest.java          # Complete feature tests (15 tests)
+│   └── SensorDataPerformanceTest.java # Insert/query performance tests
 │
 └── main/resources/
     └── application.yml               # Configuration file
@@ -104,6 +107,50 @@ src/
 | 13. Query Alert Data | Query specific status data | `in()` condition |
 | 14. Time Window Query | Hourly average statistics | `intervalWindow()` window function |
 | 15. Partitioned Time Window Query | Time window statistics partitioned by location | `partitionBy()` + `intervalWindow()` |
+
+## Performance Benchmarks
+
+`SensorDataPerformanceTest` uses a dedicated super table `BenchmarkData` (two TAGs: `device_id` and `region`) to measure insert/query throughput. Tune workloads via JVM properties, e.g.:
+
+```bash
+mvn test -Dtest=SensorDataPerformanceTest \
+  -Dtd.perf.deviceCount=5 \
+  -Dtd.perf.rowsPerDevice=10000 \
+  -Dtd.perf.partitionSize=500 \
+  -Dtd.perf.queryLimit=1000 \
+  -Dtd.perf.queryWindowMinutes=30 \
+  -Dtd.perf.queryWindowMinutesLarge=360
+```
+
+### Batch Insert
+
+| Mode | Rows | Time (ms) | Throughput (rows/s) |
+|------|------|-----------|---------------------|
+| Direct sub-table (`batchInsert`) | 50,000 | 699.26 | 71,504 |
+| Super table USING (`batchInsertUsing`) | 50,000 | 552.87 | 90,438 |
+
+USING inserts were about 21% faster thanks to auto table creation and fewer round trips.
+
+### Query
+
+| Scenario | Query Type | Rows Returned | Time (ms) | QPS |
+|----------|------------|---------------|-----------|-----|
+| Short window (30 min) | Sub-table SQL | 5,000 | 174.71 | 28.62 |
+|  | Super table + TAG SQL | 5,000 | 70.70 | 70.72 |
+|  | TdWrapper + TAG | 5,000 | 181.28 | 27.58 |
+|  | TdWrapper without TAG | 5,000 | 155.66 | 32.12 |
+| Long window (6 h) | Sub-table SQL | 5,000 | 83.24 | 60.06 |
+|  | Super table + TAG SQL | 5,000 | 86.56 | 57.77 |
+|  | TdWrapper + TAG | 5,000 | 64.80 | 77.16 |
+|  | TdWrapper without TAG | 5,000 | 74.75 | 66.89 |
+
+Notes:
+
+- Each device is truncated by `td.perf.queryLimit` (example above: 1,000 rows/device → 5,000 total). Increase the property to fetch more data.
+- In smaller windows, super table + TAG queries clearly outperform sub-table SQL; for longer windows both stay within the same magnitude.
+- When using `TdWrapper`, always pass all tag filters. Missing tags force a table scan and reduce throughput.
+
+Benchmark logs also break down per-device SQL build vs JDBC execution time to help locate bottlenecks.
 
 ## Core Code Examples
 

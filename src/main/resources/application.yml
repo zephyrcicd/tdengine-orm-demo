@@ -10,12 +10,11 @@ spring:
 # TDengine ORM 配置
 td-orm:
   enabled: true
-  log-level: INFO
+  log-level: error
 
 # 日志配置
 logging:
   level:
     com.zephyrcicd.demo: INFO
-    com.zephyrcicd.tdengineorm: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
