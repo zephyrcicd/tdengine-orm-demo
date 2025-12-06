@@ -4,6 +4,8 @@ import com.zephyrcicd.tdengineorm.annotation.TdColumn;
 import com.zephyrcicd.tdengineorm.annotation.TdTable;
 import com.zephyrcicd.tdengineorm.annotation.TdTag;
 import com.zephyrcicd.tdengineorm.enums.TdFieldTypeEnum;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 传感器数据实体类
@@ -11,9 +13,12 @@ import com.zephyrcicd.tdengineorm.enums.TdFieldTypeEnum;
  *
  * @author zephyr
  */
+@Setter
+@Getter
 @TdTable(value = "sensors", comment = "传感器超级表")
 public class SensorData {
 
+    // Getter and Setter methods
     /**
      * TAG 字段：设备ID
      * 用于区分不同的传感器设备，自动创建子表
@@ -87,79 +92,6 @@ public class SensorData {
         this.humidity = humidity;
         this.voltage = voltage;
         this.status = status;
-        this.remark = remark;
-    }
-
-    // Getter and Setter methods
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getDeviceType() {
-        return deviceType;
-    }
-
-    public void setDeviceType(String deviceType) {
-        this.deviceType = deviceType;
-    }
-
-    public Long getTs() {
-        return ts;
-    }
-
-    public void setTs(Long ts) {
-        this.ts = ts;
-    }
-
-    public Double getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(Double temperature) {
-        this.temperature = temperature;
-    }
-
-    public Double getHumidity() {
-        return humidity;
-    }
-
-    public void setHumidity(Double humidity) {
-        this.humidity = humidity;
-    }
-
-    public Float getVoltage() {
-        return voltage;
-    }
-
-    public void setVoltage(Float voltage) {
-        this.voltage = voltage;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
         this.remark = remark;
     }
 

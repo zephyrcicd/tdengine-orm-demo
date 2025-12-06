@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class SensorDataPerformanceTest {
+class BenchmarkDataPerformanceTest {
 
-    private static final Logger log = LoggerFactory.getLogger(SensorDataPerformanceTest.class);
+    private static final Logger log = LoggerFactory.getLogger(BenchmarkDataPerformanceTest.class);
 
     private static final String DIRECT_DEVICE_PREFIX = "direct";
     private static final String USING_DEVICE_PREFIX = "using";

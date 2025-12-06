@@ -4,10 +4,14 @@ import com.zephyrcicd.tdengineorm.annotation.TdColumn;
 import com.zephyrcicd.tdengineorm.annotation.TdTable;
 import com.zephyrcicd.tdengineorm.annotation.TdTag;
 import com.zephyrcicd.tdengineorm.enums.TdFieldTypeEnum;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 用于压测的超表实体，包含两个 TAG 字段。
  */
+@Setter
+@Getter
 @TdTable(value = "perf_metrics", comment = "压测超级表，包含两个TAG")
 public class BenchmarkData {
 
@@ -36,46 +40,6 @@ public class BenchmarkData {
         this.region = region;
         this.ts = ts;
         this.temperature = temperature;
-        this.humidity = humidity;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public Long getTs() {
-        return ts;
-    }
-
-    public void setTs(Long ts) {
-        this.ts = ts;
-    }
-
-    public Double getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(Double temperature) {
-        this.temperature = temperature;
-    }
-
-    public Double getHumidity() {
-        return humidity;
-    }
-
-    public void setHumidity(Double humidity) {
         this.humidity = humidity;
     }
 
